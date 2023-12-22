@@ -1,33 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Route, BrowserRouter as Router, Routes, Link } from 'react-router-dom';
+import Generate from './components/Generate';
+import Profile from './components/Profile';
+import { loadData } from './utils/localStorage';
 
 function App() {
+  const [resume,setResume] = useState('cbk');
+  const [openAIkey,setOpenAIkey] = useState('bc');
+  useEffect(()=>{
+    const fetchLocalData = async () =>{
+      const fetchResume = await loadData('resume')
+      const fetchkey = await loadData('openAIkey')
+      setResume(fetchResume)
+      setOpenAIkey(fetchkey)
+    } 
+    fetchLocalData();
+  },[])
   return (
-    <div className="flex flex-col h-full items-center justify-center bg-gray-200 text-gray-700">
-      <div className="flex items-center">
-        <h1 className="text-6xl font-thin tracking-wider">Create React App + Tailwind CSS</h1>
-      </div>
-      <p className="my-6 tracking-wide">
-        Edit <code>src/App.js</code> and save to reload.
-      </p>
-      <div className="mt-6 flex justify-center">
-        <a
-          className="uppercase hover:underline"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <a
-          className="ml-10 uppercase hover:underline"
-          href="https://tailwindcss.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn Tailwind
-        </a>
-      </div>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Profile resume={resume} 
+        setResume={setResume}
+        openAIkey={openAIkey}
+        setOpenAIkey={setOpenAIkey} />}  />
+        <Route path="/generate" element={<Generate />} />
+      </Routes>
+    </Router>
   );
 }
 
